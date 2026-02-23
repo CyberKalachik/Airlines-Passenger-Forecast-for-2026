@@ -234,3 +234,27 @@ Demand forecasting is critical for airline operations, including:
 - [x]	Pricing strategy
 - [x]	Workforce planning
 - [x]	Long-term strategic decisions
+
+________________________________________
+
+## Key dashboards
+
+Active airlines by year-over-year growth in descending order to rank carriers from fastest-growing to slowest-growing
+
+![ActiveAirlines](Screenshots/ActiveAirlines.jpg)
+
+ACTIVE AIRLINES ONLY
+
+![ResultsTableOnlyActiveAirlines](Screenshots/ResultsTableOnlyActiveAirlines.jpg)
+
+2026 Passenger Forecast by Airline
+
+![2026_PassengerForecastAirline](Screenshots/2026_PassengerForecastAirline.jpg)
+
+Projected YoY Growth for 2026
+
+![Projected_YoY_Growth_2026](Screenshots/Projected_YoY_Growth_2026.jpg)
+
+Projected Market Share — 2026
+
+![ProjectedMarketShare_2026](Screenshots/ProjectedMarketShare_2026.jpg)
