@@ -71,6 +71,66 @@ Feature engineering included:
 - Rolling averages (3-month, 12-month)
 - Seasonal indicators (month, year)
 Forecasts were generated for all months of 2026 and aggregated annually.
+
+``` Python
+# Create forecast function for one airline
+
+from sklearn.ensemble import RandomForestRegressor
+
+def forecast_airline(data):
+
+    ts = data.set_index('Activity Period Start Date') \
+             .sort_index() \
+             .asfreq('MS')
+
+    ts = ts.rename(columns={'Passenger Count': 'Passengers'})
+
+    # --- features ---
+    ts['lag_1']  = ts['Passengers'].shift(1)
+    ts['lag_12'] = ts['Passengers'].shift(12)
+    ts['roll_3']  = ts['Passengers'].rolling(3).mean()
+    ts['roll_12'] = ts['Passengers'].rolling(12).mean()
+    ts['month'] = ts.index.month
+    ts['year']  = ts.index.year
+
+    ts = ts.dropna()
+
+    train = ts.iloc[:-12]
+
+    X = train.drop('Passengers', axis=1)
+    y = train['Passengers']
+
+    model = RandomForestRegressor(n_estimators=200, random_state=42)
+    model.fit(X, y)
+
+    # --- Forecast 2026 ---
+    future_dates = pd.date_range('2026-01-01', periods=12, freq='MS')
+    last_data = ts.copy()
+
+    preds = []
+
+    for date in future_dates:
+
+        last_row = last_data.iloc[-1]
+
+        new_row = {
+            'lag_1':  last_row['Passengers'],
+            'lag_12': last_data.iloc[-12]['Passengers'],
+            'roll_3':  last_data['Passengers'].iloc[-3:].mean(),
+            'roll_12': last_data['Passengers'].iloc[-12:].mean(),
+            'month': date.month,
+            'year':  date.year
+        }
+
+        X_new = pd.DataFrame([new_row])
+        pred = model.predict(X_new)[0]
+
+        preds.append(pred)
+
+        last_data.loc[date] = [pred] + list(new_row.values())
+
+    return sum(preds)
+```
 ________________________________________
 
 ## Key Results
