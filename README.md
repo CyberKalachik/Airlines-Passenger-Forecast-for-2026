@@ -144,6 +144,80 @@ The project includes:
 - [x]	2026 passenger forecast by airline
 - [x]	YoY growth ranking with performance tiers
 - [x]	Projected market share distribution
+
+``` Python
+# Airline Forecast 2026
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+import matplotlib.ticker as ticker
+
+plt.figure(figsize=(10,6))
+
+# Sort airlines by forecasted passengers (ascending for horizontal bars)
+plot_df = results_df_active.sort_values('2026 Forecast')
+
+sns.barplot(
+    data=plot_df,
+    y='Airline',
+    x='2026 Forecast',
+    hue='Airline',
+    palette='crest',
+    legend=False
+)
+
+plt.title('2026 Passenger Forecast by Airline')
+
+ax = plt.gca()
+
+# Format x-axis in millions (e.g., 12.5M)
+ax.xaxis.set_major_formatter(
+    ticker.FuncFormatter(lambda x, pos: f'{x/1e6:.1f}M')
+)
+
+plt.xlabel('Passengers')
+plt.ylabel('Airlines')
+
+# Extend x-axis slightly so labels are not clipped
+ax.set_xlim(0, plot_df['2026 Forecast'].max() * 1.12)
+
+# Add value labels to bars
+for p in ax.patches:
+    w = p.get_width()
+    h = p.get_height()
+
+    if h < 0.3 or w <= 0:
+        continue
+
+    y = p.get_y() + h/2
+    label = f'{w/1e6:.1f}M'
+
+    # For very small bars — place label outside
+    if w < plot_df['2026 Forecast'].max() * 0.08:
+        ax.text(
+            w + plot_df['2026 Forecast'].max() * 0.01,
+            y,
+            label,
+            va='center',
+            ha='left',
+            color='black'
+        )
+
+    # For larger bars — place label inside (right-aligned)
+    else:
+        ax.text(
+            w - plot_df['2026 Forecast'].max() * 0.02,
+            y,
+            label,
+            va='center',
+            ha='right',
+            color='white',
+            fontsize=10,
+            fontweight='bold'
+        )
+
+plt.show()
+```
 ________________________________________
 
 ## Tech Stack
